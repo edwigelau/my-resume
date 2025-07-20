@@ -23,30 +23,30 @@ jobs:
   build:
     runs-on: ubuntu-latest # github shared runner not self hosted
     steps:
-      -name: Clone repo
-      uses: actions/checkout@v3 # prebuild actions
+      - name: Clone repo
+        uses: actions/checkout@v3 # prebuild actions
 
-      -name: Configure Aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with: 
-        role-to-assume: ${{ env.AWS_ROLE }} #OIDC
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure Aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with: 
+          role-to-assume: ${{ env.AWS_ROLE }} #OIDC
+          aws-region: ${{ env.AWS_REGION }}
 
-      -name: Login to Amazon ECR  
-      id: ecr-login  
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR  
+        id: ecr-login  
+        uses: aws-actions/amazon-ecr-login@v1
 
-      -name: Build, tag, and push Docker image
-      id: build-and-push
-      run: |
-        IMAGE_URI=${{ steps.ecr-login.outputs.registry}}/${{ env.ECR_REPO_NAME }}:${{env.IMAGE_TAG }} 
-        docker build -t $IMAGE_URI .
-        docker push $IMAGE_URI
-        echo "IMAGE_URI=IMAGE_URI" >> $GITHUB_ENV
+      - name: Build, tag, and push Docker image
+        id: build-and-push
+        run: |
+          IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }} 
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-      -name: Scan Docker image for vulnerabilities
-      uses: aquasecurity/trivy-action@master
-      with:
+      - name: Scan Docker image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
           image-ref: ${{ env.IMAGE_URI }}  # Scans the built image for bugs
           format: "table"
           exit-code: "1"
