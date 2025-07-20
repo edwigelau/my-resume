@@ -15,7 +15,7 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ROLE: ${{ secrets_ACTION_ROLE }}
+  AWS_ROLE: ${{ secrets.ACTION_ROLE }}
   ECR_REPO_NAME: dev
   IMAGE_TAG: ${{ github.run_number }}
 
