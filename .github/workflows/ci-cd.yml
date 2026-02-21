@@ -22,14 +22,18 @@ env:
 jobs: 
   Build:
     runs-on: ubuntu-latest # GitHub  shared runner
+    outputs: # Define outputs for the Deploy job
+      image-uri: ${{ steps.set-image.outputs.image-uri }}
     steps:
      - name: clone repo
        uses: actions/checkout@v3
+
      - name: AWS cred config
        uses: aws-actions/configure-aws-credentials@v4
        with:
           role-to-assume: ${{ env.AWS_ROLE }} # OIDC (open ID connect)
-          aws-region: ${{ env.AWS_REGION }}  
+          aws-region: ${{ env.AWS_REGION }} 
+
      - name: login to ECR 
        uses: aws-actions/amazon-ecr-login@v1 
        id: ecr-login
@@ -37,7 +41,7 @@ jobs:
        uses: aquasecurity/trivy-action@master 
        with: 
         scan-type: 'fs'
-        scan-ref: ' . ' 
+        scan-ref: '.'  
         format: 'json'
         output: "trivy-fs-results.json"
         exit-code: '0'
