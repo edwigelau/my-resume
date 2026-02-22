@@ -1,4 +1,4 @@
-name: Build Push and Deploy
+name: Build Push and Deploy by Edwige
 
 on:
   push:
@@ -120,7 +120,4 @@ jobs:
       
       - name: Update ECS service
         run: |
-          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }} --force-new-deployment   
-
-        
-     
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition ${{ env.NEW_TASK_DEFINITION }} --force-new-deployment
